@@ -1,0 +1,355 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Byte, your coding pet</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;800&display=swap">
+<style>
+:root{--bg:#EDF3F5;--sf:#FFFFFF;--ink:#14323A;--mut:#5B747C;--ln:#D3E0E4;--ac:#3B4BDB;--acink:#FFFFFF;--xp:#FFC83D;--r3:#25B592;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#13152A;--sf:#1D2040;--ink:#E7E9FB;--mut:#9AA0CC;--ln:#2D3260;--ac:#8E9BFF;--acink:#10122A;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#13152A;--sf:#1D2040;--ink:#E7E9FB;--mut:#9AA0CC;--ln:#2D3260;--ac:#8E9BFF;--acink:#10122A;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 "Bricolage Grotesque",system-ui,sans-serif}
+main{max-width:520px;margin:0 auto;padding:16px 16px 40px;display:grid;gap:14px}
+.card,.hero,details{background:var(--sf);border:1.5px solid var(--ln);border-radius:22px;padding:16px}
+.hero{position:relative;text-align:center;border-radius:28px;padding:12px 18px 18px}
+.coin{position:absolute;top:14px;right:16px;z-index:1;background:var(--bg);border:1.5px solid var(--ln);border-radius:999px;padding:4px 12px;font-weight:800}
+.stage{height:230px;border-radius:20px;display:grid;place-items:center;background:radial-gradient(circle at 50% 72%,var(--tint,#B9A8FF55) 0,transparent 68%)}
+.stage svg{width:210px;height:210px;animation:bob 3.2s ease-in-out infinite}
+.pop svg{animation:pop .6s}
+@keyframes bob{50%{transform:translateY(-5px)}}
+@keyframes pop{40%{transform:scale(1.14)}}
+@media (prefers-reduced-motion:reduce){.stage svg,.pop svg{animation:none}}
+#nm{font:800 30px/1.1 "Bricolage Grotesque",system-ui,sans-serif;text-align:center;border:0;background:transparent;color:var(--ink);width:100%;margin-top:6px;border-radius:10px}
+#sub{margin:2px 0 0;color:var(--mut)}
+.xp{height:12px;border-radius:9px;background:var(--ln);overflow:hidden;margin-top:14px}
+.xp i{display:block;height:100%;width:0;background:var(--xp);transition:width .5s}
+.mut{color:var(--mut)}
+#xpt{margin:8px 0 0;font-size:14px}
+h2{font-size:18px;font-weight:800;margin:0 0 12px}
+.tr{display:grid;grid-template-columns:30px 1fr auto;gap:10px;align-items:center;padding:7px 0}
+.ic{font-size:22px;text-align:center}
+.tr b{font-weight:600}
+.tr .mut{font-size:13px}
+.bar{height:8px;border-radius:6px;background:var(--ln);overflow:hidden;margin-top:5px}
+.bar i{display:block;height:100%;transition:width .5s}
+.lv{text-align:right;font-weight:800}
+.lv small{display:block;font-weight:400;font-size:12px;color:var(--mut)}
+.lab{font-weight:600;margin:0 0 6px}
+.seg{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:14px}
+.chips{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+.btn{font:600 15px "Bricolage Grotesque",system-ui,sans-serif;padding:11px 14px;border-radius:14px;border:1.5px solid var(--ln);background:var(--sf);color:var(--ink);cursor:pointer}
+.btn[aria-pressed="true"],.btn.p{background:var(--ac);color:var(--acink);border-color:transparent}
+.btn.p{font-size:16px;padding:12px 20px}
+button:focus-visible,input:focus-visible,textarea:focus-visible,summary:focus-visible{outline:3px solid var(--ac);outline-offset:2px}
+#msg,#impmsg{min-height:1.4em;margin:12px 0 0;font-weight:600}
+.hist{display:grid;grid-template-columns:repeat(14,1fr);gap:4px;margin:4px 0 10px}
+.h{display:block;height:26px;border-radius:7px;background:var(--ln)}
+.h1{background:var(--r3);opacity:.5}.h2{background:var(--ac);opacity:.4}.h3{background:var(--ac);opacity:.7}.h4{background:var(--ac)}
+.skins{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.sk{border:1.5px solid var(--ln);border-radius:16px;padding:10px;display:grid;gap:6px;justify-items:center;text-align:center}
+.sk.on{border-color:var(--ac)}
+.sk svg{width:84px;height:78px}
+.sk .btn{width:100%;padding:8px 10px;font-size:14px}
+.btn:disabled{opacity:.55;cursor:default}
+.btn:disabled[aria-pressed="true"]{opacity:1}
+#smsg{margin:12px 0 0;min-height:1.4em;font-weight:600}
+summary{cursor:pointer;font-weight:600}
+details p,details li{color:var(--mut);font-size:15px}
+details ul{padding-left:20px;margin:10px 0 0}
+code,textarea{font:13px/1.4 ui-monospace,Menlo,Consolas,monospace}
+code{display:block;background:var(--bg);border-radius:10px;padding:10px;overflow-x:auto;white-space:pre;margin:8px 0}
+textarea{width:100%;min-height:90px;border-radius:10px;border:1.5px solid var(--ln);background:var(--bg);color:var(--ink);padding:10px;margin-bottom:10px}
+</style>
+</head>
+<body>
+<main>
+  <section class="hero">
+    <div class="coin" id="coin" title="Coins you’ve earned and not yet spent">🪙 0</div>
+    <div id="stage" class="stage"></div>
+    <input id="nm" maxlength="16" aria-label="Pet name" value="Byte">
+    <p id="sub"></p>
+    <div class="xp"><i id="xpb"></i></div>
+    <p id="xpt" class="mut"></p>
+  </section>
+
+  <section class="card" id="traits" aria-label="Habit levels"></section>
+
+  <section class="card">
+    <h2>Today’s check-in</h2>
+    <p class="lab">Deep focus block</p>
+    <div class="seg">
+      <button type="button" class="btn" data-f="0">None</button>
+      <button type="button" class="btn" data-f="25">25 min</button>
+      <button type="button" class="btn" data-f="50">50 min</button>
+      <button type="button" class="btn" data-f="90">90+ min</button>
+    </div>
+    <p class="lab">What did you do?</p>
+    <div class="chips">
+      <button type="button" class="btn" data-c="t">Wrote or ran tests</button>
+      <button type="button" class="btn" data-c="s">Kept commits small</button>
+      <button type="button" class="btn" data-c="y">Tidied up code</button>
+      <button type="button" class="btn" data-c="l">Learned something new</button>
+    </div>
+    <div class="row">
+      <button type="button" class="btn p" id="feed">Feed <span id="fn">Byte</span></button>
+      <button type="button" class="btn" id="rest">Take a rest day</button>
+    </div>
+    <p id="msg" aria-live="polite"></p>
+  </section>
+
+  <section class="card">
+    <h2>Skins</h2>
+    <p class="mut" style="margin:-4px 0 12px;font-size:14px">Earn coins by checking in, then spend them on a new look for Byte.</p>
+    <div class="skins" id="skins"></div>
+    <p id="smsg" aria-live="polite"></p>
+  </section>
+
+  <section class="card">
+    <h2>Last 14 days</h2>
+    <div class="hist" id="hist"></div>
+    <p class="mut" id="streak" style="margin:0"></p>
+  </section>
+
+  <details>
+    <summary>How Byte grows</summary>
+    <ul>
+      <li>Showing up: 10 XP per check-in, plus up to 7 bonus XP as your streak grows. A rest day gives 6 XP and keeps the streak.</li>
+      <li>Focus: 25 min is 6 XP, 50 min is 12, 90+ min is 20.</li>
+      <li>Craft: tests 8 XP, small commits 8, tidying up 6.</li>
+      <li>Curiosity: learning something new is 12 XP.</li>
+      <li>Stages: Hatchling at 25 XP, Critter at 100, Coder at 250, Legend at 500. XP never goes down. Missed days only make Byte sleepy.</li>
+      <li>Each habit levels up at 20, 60 and 120 points and changes how Byte looks: flames for Spark, glasses and a halo for Focus, plates and a badge for Craft, antennae for Curiosity. With the Classic skin, its color follows your strongest habit.</li>
+      <li>Coins: 1 coin for every 2 XP you earn, plus 15 bonus coins each time your streak reaches a multiple of 7 days. Spend them on skins, which only change how Byte looks.</li>
+    </ul>
+  </details>
+
+  <details>
+    <summary>Import from git</summary>
+    <p>Run this in a repo, then paste the output below. It counts commits per day and guesses tests, tidy-ups and learning from commit messages. Only dates and flags are saved.</p>
+    <code>git log --since="90 days ago" --author="$(git config user.email)" --pretty=format:"%ad|%s" --date=short</code>
+    <textarea id="gl" aria-label="Git log output" placeholder="2026-10-19|add tests for parser"></textarea>
+    <button type="button" class="btn" id="imp">Import commits</button>
+    <p id="impmsg"></p>
+  </details>
+
+  <details>
+    <summary>Playground</summary>
+    <p>Add a sample week of check-ins to watch Byte grow, or clear everything and start fresh.</p>
+    <div class="row">
+      <button type="button" class="btn" id="demo">Add a sample week</button>
+      <button type="button" class="btn" id="wipe">Start over</button>
+    </div>
+  </details>
+</main>
+
+<script>
+const $=s=>document.querySelector(s);
+const TH=[0,25,100,250,500],SN=["Egg","Hatchling","Critter","Coder","Legend"],TIERS=[20,60,120],FP={25:6,50:12,90:20};
+const TR=[["sp","🔥","Spark","showing up and keeping streaks","#FF8A3D"],["fo","🎯","Focus","deep focus time","#4C7DFF"],["cr","🛠️","Craft","tests, small commits, tidy-ups","#25B592"],["cu","📚","Curiosity","learning new things","#A56BFF"]];
+const MOOD={happy:"fed and happy",nap:"napping on your rest day",ready:"ready for today’s snack",sleepy:"dozing, no rush",miss:"missing you, come back anytime"};
+const pad=n=>String(n).padStart(2,"0");
+const key=d=>d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate());
+const today=()=>key(new Date());
+const dayDiff=(a,b)=>Math.round((new Date(b)-new Date(a))/864e5);
+const tier=p=>TIERS.filter(t=>p>=t).length;
+const stageOf=x=>TH.filter(t=>x>=t).length-1;
+let S={name:"Byte",days:{},own:['classic'],skin:'classic'},store=null,draft=null;
+const SKINS=[
+{id:'classic',n:'Classic',price:0},
+{id:'sunset',n:'Sunset',price:30,c:'#FF9E6D',p:'stripes'},
+{id:'ocean',n:'Ocean',price:30,c:'#3FA7D6',p:'waves'},
+{id:'moss',n:'Moss',price:45,c:'#6BB36F',p:'spots'},
+{id:'terminal',n:'Terminal',price:60,c:'#10261A',l:'#39FF88',i:'#39FF88',p:'code'},
+{id:'cosmic',n:'Cosmic',price:80,c:'#3A2B7A',i:'#FFFFFF',p:'stars'},
+{id:'gold',n:'Golden',price:120,c:'#F0BE3A',p:'shine'}];
+const skinOf=id=>SKINS.find(k=>k.id===id)||SKINS[0];
+const spent=()=>S.own.reduce((a,id)=>a+skinOf(id).price,0);
+const blank=()=>Object.assign({f:0,t:0,s:0,y:0,l:0},S.days[today()]||{});
+
+function calc(days){
+  const ks=Object.keys(days).sort(),P={sp:0,fo:0,cr:0,cu:0},xpd={};
+  let run=0,best=0,prev=null,earn=0;
+  for(const k of ks){
+    const d=days[k];
+    run=prev&&dayDiff(prev,k)===1?run+1:1;
+    best=Math.max(best,run);
+    const a=(d.r?6:10)+Math.min(run-1,7),b=FP[d.f]||0,c=(d.t?8:0)+(d.s?8:0)+(d.y?6:0),e=d.l?12:0;
+    P.sp+=a;P.fo+=b;P.cr+=c;P.cu+=e;xpd[k]=a+b+c+e;earn+=Math.floor(xpd[k]/2)+(run%7===0?15:0);prev=k;
+  }
+  const last=ks[ks.length-1],gap=last?dayDiff(last,today()):99;
+  return {P,xp:P.sp+P.fo+P.cr+P.cu,streak:last&&gap<=1?run:0,best,gap,xpd,earn};
+}
+
+function pet(st,T,col,mood,prog,sk){
+  if(st===0){
+    const crack=prog>.5?'<path d="M82 92l10 12-8 8 12 10" fill="none" stroke="#6B5F8F" stroke-width="3" stroke-linecap="round"/>':"";
+    return `<svg viewBox="0 0 200 200" role="img" aria-label="An egg"><ellipse cx="100" cy="170" rx="46" ry="6" fill="#000" opacity=".12"/><path d="M100 36C140 36 156 96 156 124c0 28-24 44-56 44s-56-16-56-44C44 96 60 36 100 36Z" fill="#F1EDFF" stroke="#6B5F8F" stroke-width="3"/><g fill="${col}" opacity=".55"><circle cx="78" cy="120" r="7"/><circle cx="118" cy="98" r="6"/><circle cx="122" cy="138" r="8"/><circle cx="92" cy="146" r="5"/></g>${crack}</svg>`;
+  }
+  const s=[0,.6,.8,.95,1.08][st],K="#1B1B2F",L=sk.l||K,I=sk.i||K,B=sk.c||col,closed=mood==="nap"||mood==="sleepy";
+  const eye=x=>closed?`<path d="M${x-7} 113q7 7 14 0" fill="none" stroke="${I}" stroke-width="3" stroke-linecap="round"/>`:`<circle cx="${x}" cy="112" r="8" fill="#fff"/><circle cx="${x+1}" cy="113" r="4.2" fill="${K}"/>${T.fo>0?`<circle cx="${x+3}" cy="110.5" r="1.6" fill="#fff"/>`:""}`;
+  const mouth={happy:"M90 129q10 11 20 0",nap:"M94 132h12",sleepy:"M94 132h12",ready:"M92 130q8 6 16 0",miss:"M91 136q9-8 18 0"}[mood];
+  const fl=(x,y,k)=>`<path d="M0 0C-9-10-5-19 0-28 5-19 9-10 0 0Z" transform="translate(${x} ${y}) scale(${k})" fill="#FF8A3D" stroke="#FFC83D" stroke-width="2"/>`;
+  const flames=T.sp>=3?fl(84,84,1)+fl(116,84,1)+fl(100,80,1.3):T.sp===2?fl(88,84,.9)+fl(112,84,.9)+fl(100,81,1.1):T.sp===1?fl(100,81,.9):"";
+  const an=(x1,x2)=>`<path d="M${x1} 84Q${(x1+x2)/2} 66 ${x2} 58" fill="none" stroke="${K}" stroke-width="3" stroke-linecap="round"/><circle cx="${x2}" cy="58" r="6" fill="#A56BFF" stroke="${K}" stroke-width="2.5"/>`;
+  const ants=T.cu>=2?an(80,66)+an(120,134):T.cu===1?an(120,134):"";
+  const orbit=T.cu>=3?'<g fill="#A56BFF"><circle cx="34" cy="96" r="4"/><circle cx="168" cy="70" r="3.5"/><circle cx="162" cy="146" r="4.5"/></g>':"";
+  const glow=T.sp>=3?'<circle cx="100" cy="120" r="72" fill="#FFC83D" opacity=".2"/>':"";
+  const halo=T.fo>=3?'<ellipse cx="100" cy="30" rx="26" ry="7" fill="none" stroke="#FFC83D" stroke-width="4"/>':"";
+  const specs=T.fo>=2?`<g fill="none" stroke="${I}" stroke-width="2.5"><circle cx="84" cy="112" r="12"/><circle cx="116" cy="112" r="12"/><path d="M96 112h8"/></g>`:"";
+  const belly=T.cr>=1?'<ellipse cx="100" cy="136" rx="28" ry="21" fill="#fff" opacity=".35"/>':"";
+  const plates=T.cr>=2?`<g fill="#fff" opacity=".55" stroke="${K}" stroke-width="2"><rect x="44" y="112" width="15" height="28" rx="7"/><rect x="141" y="112" width="15" height="28" rx="7"/></g>`:"";
+  const badge=T.cr>=3?`<path transform="translate(100 148) scale(.7)" d="M0-10l3.5 7 7.7 1.1-5.6 5.4 1.3 7.6L0 7.5l-6.9 3.6 1.3-7.6-5.6-5.4 7.7-1.1z" fill="#FFC83D" stroke="${K}" stroke-width="1.5"/>`:"";
+  const zz=closed?'<text x="142" y="86" font-size="20" font-weight="800" style="fill:var(--mut)">z</text><text x="154" y="68" font-size="15" font-weight="800" style="fill:var(--mut)">z</text>':"";
+  return `<svg viewBox="0 0 200 200" role="img" aria-label="Your pet, a ${SN[st]}"><ellipse cx="100" cy="170" rx="${46*s}" ry="6" fill="#000" opacity=".12"/><g transform="translate(100 170) scale(${s}) translate(-100 -170)">${glow}${ants}<ellipse cx="78" cy="162" rx="15" ry="8" fill="${B}" stroke="${L}" stroke-width="3"/><ellipse cx="122" cy="162" rx="15" ry="8" fill="${B}" stroke="${L}" stroke-width="3"/><ellipse cx="100" cy="120" rx="48" ry="42" fill="${B}" stroke="${L}" stroke-width="3"/>${patt(sk,"bc")}${belly}${plates}${badge}<circle cx="70" cy="124" r="5" fill="#FF8FA3" opacity=".55"/><circle cx="130" cy="124" r="5" fill="#FF8FA3" opacity=".55"/>${eye(84)}${eye(116)}${specs}<path d="${mouth}" fill="none" stroke="${I}" stroke-width="3" stroke-linecap="round"/>${flames}${halo}${orbit}${zz}</g></svg>`;
+}
+
+function patt(sk,id){
+  const p=sk.p;if(!p)return '';let g='';
+  if(p==='stripes')for(let i=0;i<7;i++)g+=`<path d='M${44+i*16} 70l-28 100' stroke='#fff' stroke-opacity='.3' stroke-width='7'/>`;
+  if(p==='waves')for(let i=0;i<4;i++)g+=`<path d='M44 ${96+i*16}q14-9 28 0t28 0 28 0 28 0' fill='none' stroke='#fff' stroke-opacity='.4' stroke-width='3'/>`;
+  if(p==='spots')g=`<g fill='#fff' fill-opacity='.28'><circle cx='68' cy='98' r='6'/><circle cx='122' cy='92' r='5'/><circle cx='136' cy='130' r='7'/><circle cx='66' cy='140' r='5'/><circle cx='112' cy='152' r='4'/></g>`;
+  if(p==='code')g=`<g font-family='ui-monospace,Menlo,monospace' font-size='12' font-weight='700' fill='#39FF88' fill-opacity='.8'><text x='80' y='99'>&lt;/&gt;</text><text x='52' y='150'>{ }</text><text x='124' y='152'>01</text></g>`;
+  if(p==='stars')g=`<g fill='#fff'><circle cx='66' cy='96' r='2'/><circle cx='82' cy='84' r='1.5'/><circle cx='124' cy='90' r='2.2'/><circle cx='140' cy='116' r='1.6'/><circle cx='60' cy='130' r='1.8'/><circle cx='138' cy='148' r='2'/><circle cx='76' cy='152' r='1.5'/><path d='M112 140l2 5 5 2-5 2-2 5-2-5-5-2 5-2z'/></g>`;
+  if(p==='shine')g=`<path d='M62 100q8-22 36-26' fill='none' stroke='#fff' stroke-opacity='.75' stroke-width='6' stroke-linecap='round'/><circle cx='116' cy='84' r='3' fill='#fff' fill-opacity='.8'/><circle cx='132' cy='102' r='2' fill='#fff' fill-opacity='.7'/>`;
+  return `<clipPath id='${id}'><ellipse cx='100' cy='120' rx='48' ry='42'/></clipPath><g clip-path='url(#${id})'>${g}</g>`;
+}
+
+function mini(sk,col){
+  const B=sk.c||col,L=sk.l||'#1B1B2F',I=sk.i||'#1B1B2F';
+  return `<svg viewBox='40 66 120 112' aria-hidden='true'><ellipse cx='100' cy='120' rx='48' ry='42' fill='${B}' stroke='${L}' stroke-width='3'/>${patt(sk,'m'+sk.id)}<circle cx='84' cy='112' r='8' fill='#fff'/><circle cx='116' cy='112' r='8' fill='#fff'/><circle cx='85' cy='113' r='4.2' fill='#1B1B2F'/><circle cx='117' cy='113' r='4.2' fill='#1B1B2F'/><path d='M90 129q10 11 20 0' fill='none' stroke='${I}' stroke-width='3' stroke-linecap='round'/></svg>`;
+}
+
+function buy(id){
+  const sk=skinOf(id),fresh=!S.own.includes(id);
+  if(fresh){if(Math.max(0,calc(S.days).earn-spent())<sk.price)return;S.own.push(id);}
+  S.skin=id;save();render();
+  $('#smsg').textContent=fresh?`Bought ${sk.n} for ${sk.price} coins. ${S.name} is wearing it now.`:`${S.name} is now wearing ${sk.n}.`;
+}
+
+function render(){
+  const c=calc(S.days),st=stageOf(c.xp),T={};
+  TR.forEach(t=>T[t[0]]=tier(c.P[t[0]]));
+  const dom=TR.slice().sort((a,b)=>c.P[b[0]]-c.P[a[0]])[0],col=c.xp?dom[4]:"#B9A8FF";
+  const td=S.days[today()],mood=td?(td.r?"nap":"happy"):c.gap<=1?"ready":c.gap<=3?"sleepy":"miss";
+  const nxt=TH[st+1],prog=nxt?(c.xp-TH[st])/(nxt-TH[st]):1;
+  const sk=skinOf(S.skin),bal=Math.max(0,c.earn-spent());
+  $("#stage").innerHTML=pet(st,T,sk.c||col,mood,prog,sk);
+  $("#stage").style.setProperty("--tint",col+"55");
+  if($("#nm")!==document.activeElement)$("#nm").value=S.name;
+  $("#fn").textContent=S.name;
+  $("#coin").textContent="🪙 "+bal;
+  $("#skins").innerHTML=SKINS.map(k=>{
+    const own=S.own.includes(k.id),on=S.skin===k.id,lock=!own&&bal<k.price;
+    return `<div class="sk${on?" on":""}">${mini(k,col)}<b>${k.n}</b><button type="button" class="btn" data-k="${k.id}"${on?' aria-pressed="true"':""}${on||lock?" disabled":""}${lock?` title="Need ${k.price-bal} more coins"`:""}>${on?"Equipped":own?"Equip":"🪙 "+k.price}</button></div>`;
+  }).join("");
+  $("#sub").textContent=st===0?(c.xp?"Egg, warming up":"Egg, waiting for its first check-in"):SN[st]+", "+MOOD[mood];
+  $("#xpb").style.width=Math.round(prog*100)+"%";
+  $("#xpt").textContent=nxt?`${c.xp} XP, ${nxt-c.xp} more to become a ${SN[st+1]}`:`${c.xp} XP, fully grown`;
+  $("#traits").innerHTML=TR.map(t=>{
+    const p=c.P[t[0]],ti=T[t[0]],lo=TIERS[ti-1]||0,hi=TIERS[ti],pc=hi?Math.round((p-lo)/(hi-lo)*100):100;
+    return `<div class="tr"><span class="ic">${t[1]}</span><div><b>${t[2]}</b> <span class="mut">${t[3]}</span><div class="bar"><i style="width:${pc}%;background:${t[4]}"></i></div></div><span class="lv">Lv ${ti}<small>${p} pts</small></span></div>`;
+  }).join("");
+  const ds=[];
+  for(let i=13;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);ds.push(key(d));}
+  $("#hist").innerHTML=ds.map(k=>{
+    const e=S.days[k],x=c.xpd[k]||0,lv=!e?0:e.r?1:x>=40?4:x>=25?3:2;
+    return `<i class="h h${lv}" title="${k}: ${e?x+" XP":"no check-in"}"></i>`;
+  }).join("");
+  $("#streak").textContent=(c.streak?`${c.streak}-day streak`:"No streak right now")+(c.best?`, best ${c.best}. Rest days keep it alive.`:". Rest days keep it alive.");
+}
+
+function syncForm(){
+  document.querySelectorAll("[data-f]").forEach(b=>b.setAttribute("aria-pressed",String(+b.dataset.f===draft.f)));
+  document.querySelectorAll("[data-c]").forEach(b=>b.setAttribute("aria-pressed",String(!!draft[b.dataset.c])));
+}
+
+function save(){
+  try{localStorage.setItem("bytepet",JSON.stringify(S));}catch(e){}
+  try{if(store)store.set(S).catch(()=>{});}catch(e){}
+}
+
+function log(rest){
+  const before=calc(S.days),sb=stageOf(before.xp),k=today(),g=(S.days[k]||{}).g||0;
+  S.days[k]=rest?{f:0,t:0,s:0,y:0,l:0,r:1,g}:Object.assign({},draft,{r:0,g});
+  const after=calc(S.days),sa=stageOf(after.xp),gain=after.xp-before.xp,cg=after.earn-before.earn;
+  save();render();
+  const h=$("#stage");h.classList.remove("pop");void h.offsetWidth;h.classList.add("pop");
+  $("#msg").textContent=sa>sb?`${S.name} grew into a ${SN[sa]}! +${gain} XP, +${cg} coins`:gain>0?`+${gain} XP, +${cg} coins. ${rest?"Rest counts, your streak is safe.":"Nice work."}`:"Today’s check-in updated.";
+}
+
+function doImport(){
+  const by={};
+  $("#gl").value.split("\n").forEach(r=>{
+    const i=r.indexOf("|"),k=i<0?"":r.slice(0,i).trim();
+    if(/^\d{4}-\d{2}-\d{2}$/.test(k))(by[k]=by[k]||[]).push(r.slice(i+1));
+  });
+  const ks=Object.keys(by);let n=0;
+  ks.forEach(k=>{
+    const m=by[k].join(" "),d=S.days[k]||{f:0,t:0,s:0,y:0,l:0};
+    n+=by[k].length;d.g=by[k].length;
+    d.t=d.t||/test|spec/i.test(m)?1:0;
+    d.s=d.s||by[k].length>=3?1:0;
+    d.y=d.y||/refactor|clean|tidy|rename/i.test(m)?1:0;
+    d.l=d.l||/learn|try|trying|experiment|spike|prototype|explor/i.test(m)?1:0;
+    S.days[k]=d;
+  });
+  if(ks.length){save();draft=blank();syncForm();render();}
+  $("#impmsg").textContent=ks.length?`Imported ${n} commits across ${ks.length} days.`:"No lines matched. Use the command above, which prints date|message.";
+}
+
+function demo(){
+  let a=0,i=1;
+  while(a<7&&i<400){
+    const d=new Date();d.setDate(d.getDate()-i);const k=key(d);
+    if(!S.days[k]){const r=()=>Math.random()<.5?1:0;S.days[k]={f:[0,25,50,90][Math.floor(Math.random()*4)],t:r(),s:r(),y:r(),l:r(),r:0,g:0};a++;}
+    i++;
+  }
+  save();render();
+}
+
+function wipe(b){
+  if(b.dataset.arm){S.days={};S.own=['classic'];S.skin='classic';delete b.dataset.arm;b.textContent="Start over";save();draft=blank();syncForm();render();$("#msg").textContent="";return;}
+  b.dataset.arm=1;b.textContent="Click again to erase everything";
+  setTimeout(()=>{delete b.dataset.arm;b.textContent="Start over";},4000);
+}
+
+document.addEventListener("click",e=>{
+  const b=e.target.closest("button");if(!b)return;
+  if(b.dataset.f!==undefined){draft.f=+b.dataset.f;syncForm();}
+  else if(b.dataset.c){draft[b.dataset.c]=draft[b.dataset.c]?0:1;syncForm();}
+  else if(b.dataset.k)buy(b.dataset.k);
+  else if(b.id==="feed")log(false);
+  else if(b.id==="rest")log(true);
+  else if(b.id==="imp")doImport();
+  else if(b.id==="demo")demo();
+  else if(b.id==="wipe")wipe(b);
+});
+$("#nm").addEventListener("change",e=>{S.name=e.target.value.trim()||"Byte";save();render();});
+
+async function init(){
+  let loaded=false;
+  try{
+    if(typeof claude!=="undefined"){
+      const u=await claude.use("user"),db=await claude.use("db"),id=u&&await u.id();
+      if(db&&id){
+        store=db.doc("data/users/"+id+"/pet");
+        const snap=await store.get();
+        if(snap.exists){S=Object.assign({name:"Byte",days:{}},snap.data());loaded=true;}
+      }
+    }
+  }catch(e){}
+  if(!loaded){
+    try{const r=localStorage.getItem("bytepet");if(r)S=Object.assign({name:"Byte",days:{}},JSON.parse(r));}catch(e){}
+  }
+  S.days=S.days||{};S.own=S.own||['classic'];S.skin=S.skin||'classic';draft=blank();syncForm();render();
+}
+
+draft=blank();syncForm();render();
+init();
+</script>
+</body>
+</html>
